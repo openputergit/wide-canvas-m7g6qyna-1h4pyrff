@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI LLM Chain Master</title>
+    <script src="https://unpkg.com/typed.js@2.0.16/dist/typed.umd.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        * {
+            font-family: 'Space Grotesk', sans-serif;
+        }
+        
+        .glass-effect {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+        }
+        
+        .typing-container {
+            min-height: 60px;
+        }
+        
+        .loader {
+            width: 48px;
+            height: 48px;
+            border: 5px solid #FFF;
+            border-bottom-color: transparent;
+            border-radius: 50%;
+            display: inline-block;
+            box-sizing: border-box;
+            animation: rotation 1s linear infinite;
+        }
+
+        @keyframes rotation {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .step-animation {
+            animation: slideIn 0.5s ease-out;
+        }
+        
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
+</head>
+<body class="min-h-screen bg-gradient-to-br from-blue-900 via-purple-900 to-pink-900 text-white p-4">
+    <div class="max-w-4xl mx-auto">
+        <!-- Header -->
+        <div class="glass-effect rounded-xl p-6 mb-8">
+            <h1 class="text-3xl md:text-4xl font-bold mb-2">AI LLM Chain Master</h1>
+            <div class="typing-container">
+                <span id="typed-text" class="text-lg md:text-xl text-blue-200"></span>
+            </div>
+        </div>
+
+        <!-- Input Section -->
+        <div class="glass-effect rounded-xl p-6 mb-8">
+            <textarea id="userQuery" class="w-full h-32 p-4 rounded-lg bg-opacity-20 bg-white backdrop-blur-sm text-white placeholder-gray-300 border border-white/20 focus:outline-none focus:border-blue-400" placeholder="Enter your query here..."></textarea>
+            <button onclick="processQuery()" class="mt-4 px-6 py-3 bg-blue-600 hover:bg-blue-700 rounded-lg transition-all duration-300 flex items-center gap-2">
+                <i class="bi bi-lightning-charge-fill"></i>
+                Process Query
+            </button>
+        </div>
+
+        <!-- Processing Steps -->
+        <div id="processingSteps" class="glass-effect rounded-xl p-6 mb-8 hidden">
+            <h2 class="text-xl font-bold mb-4">Processing Steps</h2>
+            <div id="steps" class="space-y-4"></div>
+        </div>
+
+        <!-- Results Section -->
+        <div id="results" class="glass-effect rounded-xl p-6 hidden">
+            <h2 class="text-xl font-bold mb-4">Final Results</h2>
+            <div id="finalResponse" class="prose prose-invert max-w-none"></div>
+        </div>
+    </div>
+
+    <script>
+        // Initialize Typed.js
+        new Typed('#typed-text', {
+            strings: [
+                'Intelligent query analysis and delegation',
+                'Multiple LLM coordination',
+                'Optimized task distribution',
+                'Enhanced AI responses'
+            ],
+            typeSpeed: 50,
+            backSpeed: 30,
+            loop: true
+        });
+
+        async function processQuery() {
+            const query = document.getElementById('userQuery').value;
+            if (!query.trim()) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: 'Please enter a query first!',
+                    background: 'rgba(255, 255, 255, 0.1)',
+                    backdrop: `rgba(0,0,0,0.4)`,
+                    color: '#fff'
+                });
+                return;
+            }
+
+            // Show processing steps
+            document.getElementById('processingSteps').classList.remove('hidden');
+            document.getElementById('steps').innerHTML = '';
+            document.getElementById('results').classList.add('hidden');
+
+            // Simulate processing steps
+            const steps = [
+                { name: 'Query Analysis', llm: 'Base Model', duration: 2000 },
+                { name: 'Task Distribution', llm: 'Controller', duration: 1500 },
+                { name: 'Processing Sub-tasks', llm: 'Multiple LLMs', duration: 3000 },
+                { name: 'Response Verification', llm: 'Validator', duration: 1500 },
+                { name: 'Final Aggregation', llm: 'Aggregator', duration: 1000 }
+            ];
+
+            for (let step of steps) {
+                await new Promise(resolve => setTimeout(resolve, step.duration));
+                addStep(step);
+            }
+
+            // Show final results
+            document.getElementById('results').classList.remove('hidden');
+            document.getElementById('finalResponse').innerHTML = `
+                <div class="space-y-4">
+                    <p class="text-lg">Query processed successfully! Here's your optimized response:</p>
+                    <div class="p-4 bg-white/10 rounded-lg">
+                        <p>Your query has been processed through multiple specialized LLMs:</p>
+                        <ul class="list-disc pl-6 mt-2">
+                            <li>Code segments were handled by Gemini</li>
+                            <li>Creative writing aspects by ChatGPT</li>
+                            <li>Logical reasoning by Claude</li>
+                        </ul>
+                    </div>
+                    <p class="italic text-sm">Response has been verified and refined for accuracy.</p>
+                </div>
+            `;
+        }
+
+        function addStep(step) {
+            const stepsContainer = document.getElementById('steps');
+            const stepElement = document.createElement('div');
+            stepElement.className = 'flex items-center gap-4 step-animation';
+            stepElement.innerHTML = `
+                <div class="w-8 h-8 rounded-full bg-green-500 flex items-center justify-center">
+                    <i class="bi bi-check-lg"></i>
+                </div>
+                <div class="flex-1">
+                    <h3 class="font-medium">${step.name}</h3>
+                    <p class="text-sm text-gray-300">Processed by: ${step.llm}</p>
+                </div>
+            `;
+            stepsContainer.appendChild(stepElement);
+        }
+    </script>
+<script>document.body.addEventListener('wheel', e => { if (!e.ctrlKey) return; e.preventDefault(); return }, { passive: false })</script>
+	</body>
+</html>
